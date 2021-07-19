@@ -1,23 +1,18 @@
 const router = require('express').Router();
-const User = require('../../models/User')
+const Item = require('../../models/Item')
 
-
-router.post('/', (req, res, next) => {
-    if (!req.body) {
-        res.status(400).json({ message: "Missing required feild" })
-    }
-
-    const user = new User({
-        username: req.body.username
-    })
-
-    User.save()
-        .then(user => res.status(201).json(user))
+router.get('/', (req, res) => {
+    //get all items
+    Item.find()
+        .then(items => {
+            return res.status(200).json(items)
+        })
         .catch(err => {
-            return res.status(500).json({ message: "Error saving the user" })
+            return res.status(500).json({ message: err })
             console.log(err)
         })
 })
+
 
 
 
