@@ -2,7 +2,9 @@ const express = require('express')
 const helmet = require('helmet')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
+const passport = require('passport')
 
 const app = express()
 //use helmet for security
@@ -16,7 +18,9 @@ mongoose.Promise = global.Promise
 mongoose.connect(process.env.dbUrl || 'mongodb://core-db:27017/core', { useNewUrlParser: true })
 
 //middlewares
+app.use(cookieParser())
 app.use(bodyParser.json())
+app.use(passport.initialize())
 app.use(morgan('dev'))
 
 

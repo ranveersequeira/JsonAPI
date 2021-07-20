@@ -11,4 +11,7 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 
+UserSchema.plugin(require('passport-local-mongoose'))
+
+
 module.exports = mongoose.model('User', UserSchema)
