@@ -18,6 +18,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "faker": "^5.5.3",
+    "nodemon": "^2.0.12",
+    "request": "^2.88.2"
   }
 }

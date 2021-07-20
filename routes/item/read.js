@@ -4,19 +4,34 @@ const Item = require('../../models/Item')
 router.get('/', (req, res) => {
     const pageSize = 20;
     const currentPage = req.query.page > 0 ? req.query.page - 1 : 0;
+    const filter = req.query.filter || ""
+    const filterOn = req.query.filterOn || ""
     const sortBy = req.query.sortBy || "createdAt"
     const orderBy = req.query.orderBy || "asc"
 
     const sortQuery = {
         [sortBy]: orderBy
     }
+    let filterQuery = {}
+    if (filter.length > 0) {
+        const regex = new RegExp(filter, 'i')
+        if (filterOn.length > 0) {
+            filterQuery = {
+                [filterOn]: regex
+            }
+        } else {
+            filterQuery = {
+                content: regex
+            }
+        }
+    }
 
-    Item.count()
+    Item.countDocuments(filterQuery)
         .then(itemCount => {
             if (currentPage * pageSize > itemCount) {
                 return res.status(400).json([])
             }
-            Item.find()
+            Item.find(filterQuery)
                 .limit(pageSize)
                 .skip(currentPage * pageSize)
                 .sort(sortQuery)
