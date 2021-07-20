@@ -3,16 +3,51 @@ const User = require('../../models/User')
 
 
 router.get('/', (req, res) => {
+    const pageSize = 20;
+    const currentPage = req.query.page > 0 ? req.query.page - 1 : 0;
+
+    User.count()
+        .then(userCount => {
+            if (currentPage * pageSize > userCount) {
+                return res.status(400).json([])
+            }
+            User.find()
+                .limit(pageSize)
+                .skip(pageSize * currentPage)
+                .sort({
+                    createdAt: -1
+                })
+                .then(users => {
+                    return res.status(200).json({
+                        content: users,
+                        page: req.query.page || 1,
+                        total: userCount,
+                        limit: pageSize
+                    })
+                })
+                .catch(err => {
+                    console.log("Error getting users", err)
+                    return res.status(500).json({ message: "Cannot find users in database" })
+
+                })
+        })
     //get all users
-    User.find()
-        .then(users => {
-            return res.status(200).json(users)
+
+})
+
+
+router.get('/:id', (req, res) => {
+    const id = req.params.id;
+    User.findOne({ _id: id })
+        .then(user => {
+            return res.status(200).json(user)
         })
         .catch(err => {
-            return res.status(500).json({ message: err })
-            console.log(err)
+            console.log('Error finding user by id', err)
+            return res.status(500).json({ message: "Cannot find the user with given id" })
         })
 })
+
 
 
 module.exports = router;

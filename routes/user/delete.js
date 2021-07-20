@@ -1,22 +1,19 @@
 const router = require('express').Router();
 const User = require('../../models/User')
 
+router.delete('/:id', (req, res) => {
+    const id = req.params.id;
 
-router.post('/', (req, res, next) => {
-    if (!req.body) {
-        res.status(400).json({ message: "Missing required feild" })
-    }
-
-    const user = new User({
-        username: req.body.username
-    })
-
-    user.save()
-        .then(user => res.status(201).json(user))
-        .catch(err => {
-            return res.status(500).json({ message: "Error saving the user" })
-            console.log(err)
+    User.findByIdAndDelete(id)
+        .then(user => {
+            console.log("deleting user..", user)
+            return res.status(204).json({ message: "Successfully Deleted" })
         })
+        .catch(err => {
+            console.log("Error in deleting user", err)
+            return res.status(500).json({ message: "Error deleting user" })
+        })
+
 })
 
 

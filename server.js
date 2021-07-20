@@ -4,10 +4,6 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
-
-
-
-
 const app = express()
 //use helmet for security
 app.use(helmet())

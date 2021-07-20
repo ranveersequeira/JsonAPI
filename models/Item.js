@@ -4,11 +4,11 @@ const { Schema } = mongoose;
 
 const ItemSchema = new Schema({
     content: mongoose.SchemaTypes.Mixed,
-    itemtype: String,
+    itemType: String,
     creator: {
         type: String,
         ref: "User"
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Item', ItemSchema)

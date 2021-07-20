@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     },
     preferences: mongoose.SchemaTypes.Mixed
 
-})
+}, { timestamps: true })
 
 
 module.exports = mongoose.model('User', UserSchema)
