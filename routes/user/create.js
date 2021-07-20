@@ -1,14 +1,14 @@
 const router = require('express').Router();
 const User = require('../../models/User')
-
+const validator = require('validator')
 
 router.post('/', (req, res, next) => {
     if (!req.body) {
         res.status(400).json({ message: "Missing required feild" })
     }
-
+    const username = validator.escape(req.body.username)
     const user = new User({
-        username: req.body.username
+        username
     })
 
     user.save()

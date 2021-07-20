@@ -1,13 +1,18 @@
 const router = require('express').Router();
 const Item = require('../../models/Item')
+const validator = require('validator')
 
 router.get('/', (req, res) => {
+
+    let validQuery = Object.assign({}, ...Object.keys(req.query).map(objKey => {
+        [objKey] = validator.escape(req.query[objKey])
+    }))
     const pageSize = 20;
-    const currentPage = req.query.page > 0 ? req.query.page - 1 : 0;
-    const filter = req.query.filter || ""
-    const filterOn = req.query.filterOn || ""
-    const sortBy = req.query.sortBy || "createdAt"
-    const orderBy = req.query.orderBy || "asc"
+    const currentPage = validQuery.page > 0 ? validQuery.page - 1 : 0;
+    const filter = validQuery.filter || ""
+    const filterOn = validQuery.filterOn || ""
+    const sortBy = validQuery.sortBy || "createdAt"
+    const orderBy = validQuery.orderBy || "asc"
 
     const sortQuery = {
         [sortBy]: orderBy
@@ -54,8 +59,12 @@ router.get('/', (req, res) => {
 
 
 router.get('/:id', (req, res) => {
-    const id = req.params.id;
-    Item.findOne({ _id: id })
+    const itemId = validator.escape(req.params.id)
+    if (!validator.isMongoId(itemId)) {
+        return res.status(400).json({ message: "Not a valid id" })
+    }
+
+    Item.findOne({ _id: itemId })
         .then(item => {
             return res.status(200).json(item)
         })

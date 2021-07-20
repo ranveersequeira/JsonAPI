@@ -1,14 +1,18 @@
 const router = require('express').Router();
 const Item = require('../../models/Item')
+const validator = require('validator')
 
 
 router.delete('/:id', (req, res) => {
-    const id = req.params.id;
+    const itemId = validator.escape(req.params.id)
+    if (!validator.isMongoId(itemId)) {
+        return res.status(400).json({ message: "Not a valid id" })
+    }
 
-    Item.findByIdAndDelete(id)
+    Item.findByIdAndDelete(itemId)
         .then(item => {
             console.log("deleting user..", item)
-            return res.status(204).json({ message: "Succefully Deleted" })
+            return res.status(204).json({ message: "Successfully Deleted" })
         })
         .catch(err => {
             console.log("Error in deleting item", err)
