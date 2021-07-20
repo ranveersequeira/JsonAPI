@@ -5,6 +5,12 @@ const User = require('../../models/User')
 router.get('/', (req, res) => {
     const pageSize = 20;
     const currentPage = req.query.page > 0 ? req.query.page - 1 : 0;
+    const sortBy = req.query.sortBy || "username"
+    const orderBy = req.query.orderBy || "asc"
+
+    const sortQuery = {
+        [sortBy]: orderBy
+    }
 
     User.count()
         .then(userCount => {
@@ -14,9 +20,7 @@ router.get('/', (req, res) => {
             User.find()
                 .limit(pageSize)
                 .skip(pageSize * currentPage)
-                .sort({
-                    createdAt: -1
-                })
+                .sort(sortQuery)
                 .then(users => {
                     return res.status(200).json({
                         content: users,
